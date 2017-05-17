@@ -1,5 +1,7 @@
 #!/bin/bash
 # Nextcloud
+# 16.04 changed php5 references to php7
+# Use NC v11.0.3
 ##########################
 
 source setup/functions.sh # load our functions
@@ -11,8 +13,8 @@ echo "Installing Nextcloud (contacts/calendar)..."
 
 apt_install \
 	dbconfig-common \
-	php5-cli php5-sqlite php5-gd php5-imap php5-curl php-pear php-apc curl libapr1 libtool libcurl4-openssl-dev php-xml-parser \
-	php5 php5-dev php5-gd php5-fpm memcached php5-memcached
+	php-cli php-sqlite3 php-gd php-imap php-curl php-pear php-apc curl libapr1 libtool libcurl4-openssl-dev php-xml-parser \
+	php php-dev php-gd php-fpm memcached php-memcached
 
 apt-get purge -qq -y owncloud*
 
@@ -105,8 +107,8 @@ InstallOwncloud() {
 	fi
 }
 
-owncloud_ver=10.0.5
-owncloud_hash=686f6a8e9d7867c32e3bf3ca63b3cc2020564bf6
+owncloud_ver=11.0.3
+owncloud_hash=d23095a517cbd547fb29bccde71e6d9faaa394b71fa89329f42cfa28b6aaffd3
 owncloud_flavor=Nextcloud
 
 # Check if Nextcloud dir exist, and check if version matches owncloud_ver (if either doesn't - install/upgrade)
@@ -114,7 +116,7 @@ if [ ! -d /usr/local/lib/owncloud/ ] \
         || ! grep -q $owncloud_ver /usr/local/lib/owncloud/version.php; then
 
 	# Stop php-fpm
-	hide_output service php5-fpm stop
+	hide_output service php7.0-fpm stop
 
 	# Backup the existing ownCloud/Nextcloud.
 	# Create a backup directory to store the current installation and database to
@@ -261,7 +263,7 @@ fi
 # * We need to set the timezone to the system timezone to allow fail2ban to ban
 #   users within the proper timeframe
 # * We need to set the logdateformat to something that will work correctly with fail2ban
-# * mail_domain' needs to be set every time we run the setup. Making sure we are setting 
+# * mail_domain' needs to be set every time we run the setup. Making sure we are setting
 #   the correct domain name if the domain is being change from the previous setup.
 # Use PHP to read the settings file, modify it, and write out the new settings array.
 TIMEZONE=$(cat /etc/timezone)
@@ -305,7 +307,7 @@ if [ \( $? -ne 0 \) -a \( $? -ne 3 \) ]; then exit 1; fi
 
 # Set PHP FPM values to support large file uploads
 # (semicolon is the comment character in this file, hashes produce deprecation warnings)
-tools/editconf.py /etc/php5/fpm/php.ini -c ';' \
+tools/editconf.py /etc/php/7.0/fpm/php.ini -c ';' \
 	upload_max_filesize=16G \
 	post_max_size=16G \
 	output_buffering=16384 \
@@ -314,8 +316,8 @@ tools/editconf.py /etc/php5/fpm/php.ini -c ';' \
 	short_open_tag=On
 
 # If apc is explicitly disabled we need to enable it
-if grep -q apc.enabled=0 /etc/php5/mods-available/apcu.ini; then
-	tools/editconf.py /etc/php5/mods-available/apcu.ini -c ';' \
+if grep -q apc.enabled=0 /etc/php/7.0/mods-available/apcu.ini; then
+	tools/editconf.py /etc/php/7.0/mods-available/apcu.ini -c ';' \
 		apc.enabled=1
 fi
 
@@ -337,5 +339,5 @@ chmod +x /etc/cron.hourly/mailinabox-owncloud
 # ```
 
 # Enable PHP modules and restart PHP.
-php5enmod imap
-restart_service php5-fpm
+phpenmod imap
+restart_service php7.0-fpm
