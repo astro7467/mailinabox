@@ -1,5 +1,6 @@
 #!/bin/bash
 # Webmail with Roundcube
+# for 16.04 assume php7.0 - replaced references to php5
 # ----------------------
 
 source setup/functions.sh # load our functions
@@ -22,7 +23,7 @@ source /etc/mailinabox.conf # load global vars
 echo "Installing Roundcube (webmail)..."
 apt_install \
 	dbconfig-common \
-	php5 php5-sqlite php5-mcrypt php5-intl php5-json php5-common php-auth php-net-smtp php-net-socket php-net-sieve php-mail-mime php-crypt-gpg php5-gd php5-pspell \
+	php php-sqlite3 php-mcrypt php-intl php-json php-common php-auth php-net-smtp php-net-socket php-net-sieve php-mail-mime php-crypt-gpg php-gd php-pspell \
 	tinymce libjs-jquery libjs-jquery-mousewheel libmagic1
 apt_get_quiet remove php-mail-mimedecode # no longer needed since Roundcube 1.1.3
 
@@ -210,5 +211,5 @@ chown www-data:www-data $STORAGE_ROOT/mail/roundcube/roundcube.sqlite
 chmod 664 $STORAGE_ROOT/mail/roundcube/roundcube.sqlite
 
 # Enable PHP modules.
-php5enmod mcrypt
-restart_service php5-fpm
+phpenmod mcrypt
+restart_service php-fpm
