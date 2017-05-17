@@ -6,6 +6,11 @@
 #
 #########################################################
 
+
+if [ -z "$GIT_REPOSITORY" ]; then
+	GIT_REPOSITORY="https://github.com/xltechasia/mailinabox1604zfs.git"
+fi
+
 if [ -z "$TAG" ]; then
 	TAG=v0.22
 fi
@@ -28,7 +33,7 @@ if [ ! -d $HOME/mailinabox ]; then
 	echo Downloading Mail-in-a-Box $TAG. . .
 	git clone \
 		-b $TAG --depth 1 \
-		https://github.com/mail-in-a-box/mailinabox \
+		"$GIT_REPOSITORY" \
 		$HOME/mailinabox \
 		< /dev/null 2> /dev/null
 

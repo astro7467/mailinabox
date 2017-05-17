@@ -1,3 +1,4 @@
+#!/bin/bash
 source /etc/mailinabox.conf
 source setup/functions.sh # load our functions
 
@@ -29,7 +30,7 @@ hostname $PRIMARY_HOSTNAME
 # - Check if the user intents to activate swap on next boot by checking fstab entries.
 # - Check if a swapfile already exists
 # - Check if the root file system is not btrfs, might be an incompatible version with
-#   swapfiles. User should hanle it them selves.
+#   swapfiles. User should handle it them selves.
 # - Check the memory requirements
 # - Check available diskspace
 
@@ -51,7 +52,7 @@ if
 then
 	echo "Adding a swap file to the system..."
 
-	# Allocate and activate the swap file. Allocate in 1KB chuncks
+	# Allocate and activate the swap file. Allocate in 1KB chunks
 	# doing it in one go, could fail on low memory systems
 	dd if=/dev/zero of=/swapfile bs=1024 count=$[1024*1024] status=none
 	if [ -e /swapfile ]; then
@@ -72,9 +73,8 @@ fi
 
 # We've built several .deb packages on our own that we want to include.
 # One is a replacement for Ubuntu's stock postgrey package that makes
-# some enhancements. The other is dovecot-lucene, a Lucene-based full
-# text search plugin for (and by) dovecot, which is not available in
-# Ubuntu currently.
+# some enhancements.
+# 16.04.x includes dovecot-lucene, so no need for ppa add of package
 #
 # So, first ensure add-apt-repository is installed, then use it to install
 # the [mail-in-a-box ppa](https://launchpad.net/~mail-in-a-box/+archive/ubuntu/ppa).
@@ -122,10 +122,11 @@ apt_install python3 python3-dev python3-pip \
 # ### Suppress Upgrade Prompts
 # Since Mail-in-a-Box might jump straight to 18.04 LTS, there's no need
 # to be reminded about 16.04 on every login.
-if [ -f /etc/update-manager/release-upgrades ]; then
-	tools/editconf.py /etc/update-manager/release-upgrades Prompt=never
-	rm -f /var/lib/ubuntu-release-upgrader/release-upgrade-available
-fi
+# Removed as we are 16/04, so want 18.04 prompting (potentially)
+#if [ -f /etc/update-manager/release-upgrades ]; then
+#	tools/editconf.py /etc/update-manager/release-upgrades Prompt=never
+#	rm -f /var/lib/ubuntu-release-upgrader/release-upgrade-available
+#fi
 
 # ### Set the system timezone
 #
@@ -196,7 +197,7 @@ fi
 # issue any warnings if no entropy is actually available. (http://www.2uo.de/myths-about-urandom/)
 # Entropy might not be readily available because this machine has no user input
 # devices (common on servers!) and either no hard disk or not enough IO has
-# ocurred yet --- although haveged tries to mitigate this. So there's a good chance
+# occurred yet --- although haveged tries to mitigate this. So there's a good chance
 # that accessing /dev/urandom will not be drawing from any hardware entropy and under
 # a perfect-storm circumstance where the other seeds are meaningless, /dev/urandom
 # may not be seeded at all.

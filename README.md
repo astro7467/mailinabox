@@ -19,6 +19,18 @@ Our goals are to:
 
 Additionally, this project has a [Code of Conduct](CODE_OF_CONDUCT.md), which supersedes the goals above. Please review it when joining our community.
 
+
+Mail-in-a-Box 16.04 ZFS Fork Ambitions
+======================================
+
+- WIP - Release 0.0 - Working AS-IS on Ubuntu 16.04.x LTS with a user built zpool called 'tank'
+- TBA - Release 0.1 - ID and transition all variable data to ZFS pool. 
+- TBA - Release 1.0 - Move to Nextcloud 11.x/12.x
+- TBA - Release 2.0 - Add ZFS on Linux Creation/Management/Snapshot control to Setup (OTO?)
+- TBA - Release 3.0 - Add Nextcloud Admin and/or groups to management console
+- TBA - Release 3.1 - Add ZFS Snapshot control/Management to Admin Console
+
+
 The Box
 -------
 
