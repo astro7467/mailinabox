@@ -13,7 +13,7 @@ echo "Installing Nextcloud (contacts/calendar)..."
 
 apt_install \
 	dbconfig-common \
-	php-cli php-sqlite3 php-gd php-imap php-curl php-pear php-apc curl libapr1 libtool libcurl4-openssl-dev php-xml-parser \
+	php-cli php-sqlite3 php-gd php-imap php-curl php-pear php-apcu curl libapr1 libtool libcurl4-openssl-dev php-xml-parser \
 	php php-dev php-gd php-fpm memcached php-memcached
 
 apt-get purge -qq -y owncloud*
