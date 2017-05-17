@@ -2,7 +2,7 @@
 #########################################################
 # This script is intended to be run like this:
 #
-#   curl https://mailinabox.email/setup.sh | sudo bash
+#   curl https://raw.githubusercontent.com/xltechasia/mailinabox1604zfs/master/setup/bootstrap.sh | sudo bash
 #
 #########################################################
 
@@ -12,7 +12,7 @@ if [ -z "$GIT_REPOSITORY" ]; then
 fi
 
 if [ -z "$TAG" ]; then
-	TAG=v0.22
+	TAG=16.04v22
 fi
 
 # Are we running as root?
