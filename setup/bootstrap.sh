@@ -31,8 +31,10 @@ if [ ! -d $HOME/mailinabox ]; then
 	fi
 
 	echo Downloading Mail-in-a-Box $TAG. . .
+	#TODO Fix git tag usage
+	#git clone \
+	#	-b $TAG --depth 1 \
 	git clone \
-		-b $TAG --depth 1 \
 		"$GIT_REPOSITORY" \
 		$HOME/mailinabox \
 		< /dev/null 2> /dev/null
