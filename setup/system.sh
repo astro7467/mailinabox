@@ -88,6 +88,12 @@ fi
 
 hide_output add-apt-repository -y ppa:mail-in-a-box/ppa
 
+#TODO rebuild packages for 16.04
+if [ -f "/etc/apt/sources.list.d/mail-in-a-box-ubuntu-ppa-xenial.list" ]; then
+    cat "/etc/apt/sources.list.d/mail-in-a-box-ubuntu-ppa-xenial.list" | sed -e 's/xenial/trusty/i' >"/etc/apt/sources.list.d/mail-in-a-box-ubuntu-ppa-trusty.list"
+    rm "/etc/apt/sources.list.d/mail-in-a-box-ubuntu-ppa-xenial*"
+fi
+
 # ### Update Packages
 
 # Update system packages to make sure we have the latest upstream versions of things from Ubuntu.
