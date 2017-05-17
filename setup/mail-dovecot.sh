@@ -109,16 +109,23 @@ tools/editconf.py /etc/dovecot/conf.d/20-imap.conf \
 tools/editconf.py /etc/dovecot/conf.d/20-pop3.conf \
 	pop3_uidl_format="%08Xu%08Xv"
 
+#TODO Verify this is redundant
 # Full Text Search - Enable full text search of mail using dovecot's lucene plugin,
 # which *we* package and distribute (dovecot-lucene package).
-tools/editconf.py /etc/dovecot/conf.d/10-mail.conf \
-	mail_plugins="\$mail_plugins fts fts_lucene"
-cat > /etc/dovecot/conf.d/90-plugin-fts.conf << EOF;
-plugin {
-  fts = lucene
-  fts_lucene = whitespace_chars=@.
-}
-EOF
+#tools/editconf.py /etc/dovecot/conf.d/10-mail.conf \
+#	mail_plugins="\$mail_plugins fts fts_lucene"
+#cat > /etc/dovecot/conf.d/90-plugin-fts.conf << EOF;
+#plugin {
+#  fts = lucene
+#  fts_lucene = whitespace_chars=@.
+#}
+#EOF
+
+#Remove exiting lucene plugin from MIAB PPA reference
+if [ -f "/etc/dovecot/conf.d/90-plugin-fts.conf" ]; then
+    rm "/etc/dovecot/conf.d/90-plugin-fts.conf"
+fi
+
 
 # ### LDA (LMTP)
 
