@@ -93,7 +93,7 @@ if [ -f "/etc/apt/sources.list.d/mail-in-a-box-ubuntu-ppa-xenial.list" ]; then
     cat "/etc/apt/sources.list.d/mail-in-a-box-ubuntu-ppa-xenial.list" \
         | sed -e 's/xenial/trusty/i' \
         >"/etc/apt/sources.list.d/mail-in-a-box-ubuntu-ppa-trusty.list"
-    rm "/etc/apt/sources.list.d/mail-in-a-box-ubuntu-ppa-xenial.*"
+    rm "/etc/apt/sources.list.d/mail-in-a-box-ubuntu-ppa-xenial.list"
 fi
 
 # ### Update Packages
