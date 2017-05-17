@@ -46,11 +46,12 @@ cd $HOME/mailinabox
 # Update it.
 if [ "$TAG" != `git describe` ]; then
 	echo Updating Mail-in-a-Box to $TAG . . .
-	git fetch --depth 1 --force --prune origin tag $TAG
-	if ! git checkout -q $TAG; then
-		echo "Update failed. Did you modify something in `pwd`?"
-		exit
-	fi
+	#TODO Fix git tag usage
+	#git fetch --depth 1 --force --prune origin tag $TAG
+	#if ! git checkout -q $TAG; then
+	#	echo "Update failed. Did you modify something in `pwd`?"
+	#	exit
+	#fi
 	echo
 fi
 
