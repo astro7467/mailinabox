@@ -40,6 +40,14 @@ sed "s#STORAGE_ROOT#$STORAGE_ROOT#" \
 tools/editconf.py /etc/nginx/nginx.conf -s \
 	server_names_hash_bucket_size="128;"
 
+# need to remove the following lines from nginx.conf as they conflict with
+# miab supplied ssl.conf file
+#   ssl_protocols TLSv1 TLSv1.1 TLSv1.2; # Dropping SSLv3, ref: POODLE
+#   ssl_prefer_server_ciphers on;
+
+cp /etc/nginx/nginx.conf /etc/nginx/nginx.conf.orig
+sed -e 's/\( *\)ssl_\(.*\)/\1#ssl_\2/i' /etc/nginx/nginx.conf.orig >/etc/nginx/nginx.conf
+
 # Tell PHP not to expose its version number in the X-Powered-By header.
 tools/editconf.py /etc/php/7.0/fpm/php.ini -c ';' \
 	expose_php=Off
@@ -93,7 +101,7 @@ if [ -L /etc/init.d/php-fastcgi ]; then
 	echo "Removing /etc/init.d/php-fastcgi, php5-cgi..." #NODOC
 	rm -f /etc/init.d/php-fastcgi #NODOC
 	hide_output update-rc.d php-fastcgi remove #NODOC
-	apt-get -y purge php5-cgi #NODOC
+	apt-get -y purge php-cgi #NODOC
 fi
 
 # Remove obsoleted scripts. #NODOC
