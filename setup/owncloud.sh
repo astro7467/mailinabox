@@ -108,7 +108,7 @@ InstallOwncloud() {
 }
 
 owncloud_ver=11.0.3
-owncloud_hash=d23095a517cbd547fb29bccde71e6d9faaa394b71fa89329f42cfa28b6aaffd3
+owncloud_hash=a396aaa1c9f920099a90a86b4a9cd0ec13083c99
 owncloud_flavor=Nextcloud
 
 # Check if Nextcloud dir exist, and check if version matches owncloud_ver (if either doesn't - install/upgrade)
