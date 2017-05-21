@@ -332,9 +332,9 @@ EOF
 chmod +x /etc/cron.hourly/mailinabox-owncloud
 
 # Make MIAB admin users, admins in Nextcloud.
-for user in $(tools/mail.py user admins); do
-    sqlite3 $STORAGE_ROOT/owncloud/owncloud.db "INSERT OR IGNORE INTO oc_group_user VALUES ('admin', '$user')"
-done
+#for user in $(tools/mail.py user admins); do
+#    sqlite3 $STORAGE_ROOT/owncloud/owncloud.db "INSERT OR IGNORE INTO oc_group_user VALUES ('admin', '$user')"
+#done
 
 # Enable PHP modules and restart PHP.
 phpenmod imap
