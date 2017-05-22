@@ -26,7 +26,7 @@ if [ ! -f $1/config.php ]; then
 fi
 
 echo "Restoring backup from $1"
-service php5-fpm stop
+service php7.0-fpm stop
 
 # remove the current ownCloud/Nextcloud installation
 rm -rf /usr/local/lib/nextcloud/
