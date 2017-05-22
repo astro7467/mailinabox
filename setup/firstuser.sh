@@ -1,3 +1,4 @@
+#!/bin/bash
 # If there aren't any mail users yet, create one.
 if [ -z "`tools/mail.py user`" ]; then
 	# The outut of "tools/mail.py user" is a list of mail users. If there

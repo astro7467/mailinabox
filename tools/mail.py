@@ -17,7 +17,7 @@ def mgmt(cmd, data=None, is_json=False):
 				print(e.read().decode("utf8"))
 			except:
 				pass
-			print("The management daemon refused access. The API key file may be out of sync. Try 'service mailinabox restart'.", file=sys.stderr)
+			print("The management daemon refused access. The API key file may be out of sync. Try 'systemctl restart mailinabox'.", file=sys.stderr)
 		elif hasattr(e, 'read'):
 			print(e.read().decode('utf8'), file=sys.stderr)
 		else:

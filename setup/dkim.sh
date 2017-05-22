@@ -35,7 +35,7 @@ ExternalIgnoreList      refile:/etc/opendkim/TrustedHosts
 InternalHosts           refile:/etc/opendkim/TrustedHosts
 KeyTable                refile:/etc/opendkim/KeyTable
 SigningTable            refile:/etc/opendkim/SigningTable
-Socket                  inet:8891@127.0.0.1
+Socket                  inet:8891@localhost
 RequireSafeKeys         false
 EOF
 fi

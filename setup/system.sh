@@ -88,7 +88,7 @@ fi
 
 hide_output add-apt-repository -y ppa:mail-in-a-box/ppa
 
-#TODO rebuild packages for 16.04
+#TODO rebuild packages for 16.04?
 if [ -f "/etc/apt/sources.list.d/mail-in-a-box-ubuntu-ppa-xenial.list" ]; then
     cat "/etc/apt/sources.list.d/mail-in-a-box-ubuntu-ppa-xenial.list" \
         | sed -e 's/xenial/trusty/i' \
@@ -259,12 +259,12 @@ if [ -z "$DISABLE_FIREWALL" ]; then
 	# too. #NODOC
 	SSH_PORT=$(sshd -T 2>/dev/null | grep "^port " | sed "s/port //") #NODOC
 	if [ ! -z "$SSH_PORT" ]; then
-	if [ "$SSH_PORT" != "22" ]; then
+        if [ "$SSH_PORT" != "22" ]; then
 
-	echo Opening alternate SSH port $SSH_PORT. #NODOC
-	ufw_allow $SSH_PORT #NODOC
+        echo Opening alternate SSH port $SSH_PORT. #NODOC
+        ufw_allow $SSH_PORT #NODOC
 
-	fi
+        fi
 	fi
 
 	ufw --force enable;
@@ -298,9 +298,13 @@ apt_install bind9 resolvconf
 tools/editconf.py /etc/default/bind9 \
 	RESOLVCONF=yes \
 	"OPTIONS=\"-u bind -4\""
+
+sed -i "s/listen-on { 127.0.0.1; };/listen-on { any; };/" /etc/bind/named.conf.options
 if ! grep -q "listen-on " /etc/bind/named.conf.options; then
 	# Add a listen-on directive if it doesn't exist inside the options block.
-	sed -i "s/^}/\n\tlisten-on { 127.0.0.1; };\n}/" /etc/bind/named.conf.options
+	# changed to any per the default v6 option
+	sed -i "s/^}/\n\tlisten-on { any; };\n}/" /etc/bind/named.conf.options
+	#sed -i "s/^}/\n\tlisten-on { 127.0.0.1; };\n}/" /etc/bind/named.conf.options
 fi
 if [ -f /etc/resolvconf/resolv.conf.d/original ]; then
 	echo "Archiving old resolv.conf (was /etc/resolvconf/resolv.conf.d/original, now /etc/resolvconf/resolv.conf.original)." #NODOC

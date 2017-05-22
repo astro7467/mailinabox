@@ -19,6 +19,9 @@ if [ -z `locale -a | grep en_US.utf8` ]; then
     hide_output locale-gen en_US.UTF-8
 fi
 
+#generate all assigned locales to prevent some misc errors/warning later
+hide_output locale-gen
+
 export LANGUAGE=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
