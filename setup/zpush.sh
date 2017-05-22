@@ -16,10 +16,9 @@ source /etc/mailinabox.conf # load global vars
 # Prereqs.
 
 echo "Installing Z-Push (Exchange/ActiveSync server)..."
-apt_install \
-	php-soap php-imap libawl-php php7.0-xsl
+apt_install php-soap php-imap libawl-php php7.0-xsl
 
-php5enmod imap
+phpenmod imap
 
 # Copy Z-Push into place.
 TARGETHASH=131229a8feda09782dfd06449adce3d5a219183f
@@ -100,7 +99,7 @@ EOF
 
 # Restart service.
 
-restart_service php5-fpm
+restart_service php7.0-fpm
 
 # Fix states after upgrade
 
