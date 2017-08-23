@@ -19,6 +19,9 @@ if [ -z `locale -a | grep en_US.utf8` ]; then
     hide_output locale-gen en_US.UTF-8
 fi
 
+#generate all assigned locales to prevent some misc errors/warning later
+hide_output locale-gen
+
 export LANGUAGE=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
@@ -51,6 +54,14 @@ source setup/start.sh
 EOF
 chmod +x /usr/local/bin/mailinabox
 
+# Define the GIT repository we should work from
+if [ -z "$DEFAULT_GIT_REPOSITORY" ]; then
+    export GIT_REPOSITORY="https://github.com/xltechasia/mailinabox1604zfs.git"
+else
+    export GIT_REPOSITORY="$DEFAULT_GIT_REPOSITORY"
+fi
+
+
 # Ask the user for the PRIMARY_HOSTNAME, PUBLIC_IP, and PUBLIC_IPV6,
 # if values have not already been set in environment variables. When running
 # non-interactively, be sure to set values for all! Also sets STORAGE_USER and
@@ -61,9 +72,9 @@ source setup/questions.sh
 # Skip on existing installs since we don't want this to block the ability to
 # upgrade, and these checks are also in the control panel status checks.
 if [ -z "$DEFAULT_PRIMARY_HOSTNAME" ]; then
-if [ -z "$SKIP_NETWORK_CHECKS" ]; then
-	source setup/network-checks.sh
-fi
+    if [ -z "$SKIP_NETWORK_CHECKS" ]; then
+    	source setup/network-checks.sh
+    fi
 fi
 
 # Create the STORAGE_USER and STORAGE_ROOT directory if they don't already exist.
@@ -75,6 +86,7 @@ if ! id -u $STORAGE_USER >/dev/null 2>&1; then
 	useradd -m $STORAGE_USER
 fi
 if [ ! -d $STORAGE_ROOT ]; then
+	#TODO Add to make a ZFS volume/mount eg zfs create -o mountpoint=$STORAGE_ROOT /tank/$STORAGE_USER
 	mkdir -p $STORAGE_ROOT
 fi
 if [ ! -f $STORAGE_ROOT/mailinabox.version ]; then
@@ -93,6 +105,7 @@ PUBLIC_IP=$PUBLIC_IP
 PUBLIC_IPV6=$PUBLIC_IPV6
 PRIVATE_IP=$PRIVATE_IP
 PRIVATE_IPV6=$PRIVATE_IPV6
+GIT_REPOSITORY=$GIT_REPOSITORY
 EOF
 
 # Start service configuration.
@@ -106,7 +119,7 @@ source setup/dkim.sh
 source setup/spamassassin.sh
 source setup/web.sh
 source setup/webmail.sh
-source setup/owncloud.sh
+source setup/nextcloud.sh
 source setup/zpush.sh
 source setup/management.sh
 source setup/munin.sh

@@ -1,3 +1,4 @@
+#!/bin/bash
 function hide_output {
 	# This function hides the output of a command unless the command fails
 	# and returns a non-zero exit code.
@@ -131,7 +132,7 @@ function get_default_privateip {
 	fi
 
 	echo $address
-		
+
 }
 
 function ufw_allow {
@@ -142,7 +143,7 @@ function ufw_allow {
 }
 
 function restart_service {
-	hide_output service $1 restart
+	systemctl restart $1
 }
 
 ## Dialog Functions ##

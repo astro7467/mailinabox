@@ -1,3 +1,4 @@
+#!/bin/bash
 if [ -z "$NONINTERACTIVE" ]; then
 	# Install 'dialog' so we can ask the user questions. The original motivation for
 	# this was being able to ask the user for input even if stdin has been redirected,
@@ -160,7 +161,7 @@ if [ -z "$PRIVATE_IPV6" ]; then
 fi
 if [[ -z "$PRIVATE_IP" && -z "$PRIVATE_IPV6" ]]; then
 	echo
-	echo "I could not determine the IP or IPv6 address of the network inteface"
+	echo "I could not determine the IP or IPv6 address of the network interface"
 	echo "for connecting to the Internet. Setup must stop."
 	echo
 	hostname -I

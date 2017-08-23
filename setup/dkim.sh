@@ -21,6 +21,10 @@ mkdir -p $STORAGE_ROOT/mail/dkim
 # Not quite sure why.
 echo "127.0.0.1" > /etc/opendkim/TrustedHosts
 
+# Ensure 3 referenced files exist for service start
+touch /etc/opendkim/KeyTable
+touch /etc/opendkim/SigningTable
+
 if grep -q "ExternalIgnoreList" /etc/opendkim.conf; then
 	true # already done #NODOC
 else
@@ -31,7 +35,7 @@ ExternalIgnoreList      refile:/etc/opendkim/TrustedHosts
 InternalHosts           refile:/etc/opendkim/TrustedHosts
 KeyTable                refile:/etc/opendkim/KeyTable
 SigningTable            refile:/etc/opendkim/SigningTable
-Socket                  inet:8891@127.0.0.1
+Socket                  inet:8891@localhost
 RequireSafeKeys         false
 EOF
 fi

@@ -2,9 +2,14 @@
 #########################################################
 # This script is intended to be run like this:
 #
-#   curl https://mailinabox.email/setup.sh | sudo bash
+#   curl https://raw.githubusercontent.com/xltechasia/mailinabox1604zfs/master/setup/bootstrap.sh | sudo bash
 #
 #########################################################
+
+
+if [ -z "$GIT_REPOSITORY" ]; then
+	GIT_REPOSITORY="https://github.com/xltechasia/mailinabox1604zfs.git"
+fi
 
 if [ -z "$TAG" ]; then
 	TAG=v0.23a
@@ -26,9 +31,11 @@ if [ ! -d $HOME/mailinabox ]; then
 	fi
 
 	echo Downloading Mail-in-a-Box $TAG. . .
+	#TODO Fix git tag usage
+	#git clone \
+	#	-b $TAG --depth 1 \
 	git clone \
-		-b $TAG --depth 1 \
-		https://github.com/mail-in-a-box/mailinabox \
+		"$GIT_REPOSITORY" \
 		$HOME/mailinabox \
 		< /dev/null 2> /dev/null
 
@@ -41,14 +48,14 @@ cd $HOME/mailinabox
 # Update it.
 if [ "$TAG" != `git describe` ]; then
 	echo Updating Mail-in-a-Box to $TAG . . .
-	git fetch --depth 1 --force --prune origin tag $TAG
-	if ! git checkout -q $TAG; then
-		echo "Update failed. Did you modify something in `pwd`?"
-		exit
-	fi
+	#TODO Fix git tag usage
+	#git fetch --depth 1 --force --prune origin tag $TAG
+	#if ! git checkout -q $TAG; then
+	#	echo "Update failed. Did you modify something in `pwd`?"
+	#	exit
+	#fi
 	echo
 fi
 
 # Start setup script.
 setup/start.sh
-

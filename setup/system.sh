@@ -1,3 +1,4 @@
+#!/bin/bash
 source /etc/mailinabox.conf
 source setup/functions.sh # load our functions
 
@@ -29,7 +30,7 @@ hostname $PRIMARY_HOSTNAME
 # - Check if the user intents to activate swap on next boot by checking fstab entries.
 # - Check if a swapfile already exists
 # - Check if the root file system is not btrfs, might be an incompatible version with
-#   swapfiles. User should hanle it them selves.
+#   swapfiles. User should handle it them selves.
 # - Check the memory requirements
 # - Check available diskspace
 
@@ -51,7 +52,7 @@ if
 then
 	echo "Adding a swap file to the system..."
 
-	# Allocate and activate the swap file. Allocate in 1KB chuncks
+	# Allocate and activate the swap file. Allocate in 1KB chunks
 	# doing it in one go, could fail on low memory systems
 	dd if=/dev/zero of=/swapfile bs=1024 count=$[1024*1024] status=none
 	if [ -e /swapfile ]; then
@@ -72,9 +73,8 @@ fi
 
 # We've built several .deb packages on our own that we want to include.
 # One is a replacement for Ubuntu's stock postgrey package that makes
-# some enhancements. The other is dovecot-lucene, a Lucene-based full
-# text search plugin for (and by) dovecot, which is not available in
-# Ubuntu currently.
+# some enhancements.
+# 16.04.x includes dovecot-lucene, so no need for ppa add of package
 #
 # So, first ensure add-apt-repository is installed, then use it to install
 # the [mail-in-a-box ppa](https://launchpad.net/~mail-in-a-box/+archive/ubuntu/ppa).
@@ -87,6 +87,14 @@ if [ ! -f /usr/bin/add-apt-repository ]; then
 fi
 
 hide_output add-apt-repository -y ppa:mail-in-a-box/ppa
+
+#TODO rebuild packages for 16.04?
+if [ -f "/etc/apt/sources.list.d/mail-in-a-box-ubuntu-ppa-xenial.list" ]; then
+    cat "/etc/apt/sources.list.d/mail-in-a-box-ubuntu-ppa-xenial.list" \
+        | sed -e 's/xenial/trusty/i' \
+        >"/etc/apt/sources.list.d/mail-in-a-box-ubuntu-ppa-trusty.list"
+    rm "/etc/apt/sources.list.d/mail-in-a-box-ubuntu-ppa-xenial.list"
+fi
 
 # ### Update Packages
 
@@ -133,15 +141,16 @@ hide_output apt-get update
 # ### Suppress Upgrade Prompts
 # Since Mail-in-a-Box might jump straight to 18.04 LTS, there's no need
 # to be reminded about 16.04 on every login.
-if [ -f /etc/update-manager/release-upgrades ]; then
-	tools/editconf.py /etc/update-manager/release-upgrades Prompt=never
-	rm -f /var/lib/ubuntu-release-upgrader/release-upgrade-available
-fi
+# Removed as we are 16/04, so want 18.04 prompting (potentially)
+#if [ -f /etc/update-manager/release-upgrades ]; then
+#	tools/editconf.py /etc/update-manager/release-upgrades Prompt=never
+#	rm -f /var/lib/ubuntu-release-upgrader/release-upgrade-available
+#fi
 
 # ### Set the system timezone
 #
 # Some systems are missing /etc/timezone, which we cat into the configs for
-# Z-Push and ownCloud, so we need to set it to something. Daily cron tasks
+# Z-Push and ownCloud/Nextcloud, so we need to set it to something. Daily cron tasks
 # like the system backup are run at a time tied to the system timezone, so
 # letting the user choose will help us identify the right time to do those
 # things (i.e. late at night in whatever timezone the user actually lives
@@ -179,7 +188,7 @@ fi
 # * DNSSEC signing keys (see `dns.sh`)
 # * our management server's API key (via Python's os.urandom method)
 # * Roundcube's SECRET_KEY (`webmail.sh`)
-# * ownCloud's administrator account password (`owncloud.sh`)
+# * ownCloud's administrator account password (`nextcloud.sh`)
 #
 # Why /dev/urandom? It's the same as /dev/random, except that it doesn't wait
 # for a constant new stream of entropy. In practice, we only need a little
@@ -207,7 +216,7 @@ fi
 # issue any warnings if no entropy is actually available. (http://www.2uo.de/myths-about-urandom/)
 # Entropy might not be readily available because this machine has no user input
 # devices (common on servers!) and either no hard disk or not enough IO has
-# ocurred yet --- although haveged tries to mitigate this. So there's a good chance
+# occurred yet --- although haveged tries to mitigate this. So there's a good chance
 # that accessing /dev/urandom will not be drawing from any hardware entropy and under
 # a perfect-storm circumstance where the other seeds are meaningless, /dev/urandom
 # may not be seeded at all.
@@ -261,12 +270,12 @@ if [ -z "$DISABLE_FIREWALL" ]; then
 	# too. #NODOC
 	SSH_PORT=$(sshd -T 2>/dev/null | grep "^port " | sed "s/port //") #NODOC
 	if [ ! -z "$SSH_PORT" ]; then
-	if [ "$SSH_PORT" != "22" ]; then
+        if [ "$SSH_PORT" != "22" ]; then
 
-	echo Opening alternate SSH port $SSH_PORT. #NODOC
-	ufw_allow $SSH_PORT #NODOC
+        echo Opening alternate SSH port $SSH_PORT. #NODOC
+        ufw_allow $SSH_PORT #NODOC
 
-	fi
+        fi
 	fi
 
 	ufw --force enable;
@@ -300,9 +309,13 @@ apt_install bind9 resolvconf
 tools/editconf.py /etc/default/bind9 \
 	RESOLVCONF=yes \
 	"OPTIONS=\"-u bind -4\""
+
+sed -i "s/listen-on { 127.0.0.1; };/listen-on { any; };/" /etc/bind/named.conf.options
 if ! grep -q "listen-on " /etc/bind/named.conf.options; then
 	# Add a listen-on directive if it doesn't exist inside the options block.
-	sed -i "s/^}/\n\tlisten-on { 127.0.0.1; };\n}/" /etc/bind/named.conf.options
+	# changed to any per the default v6 option
+	sed -i "s/^}/\n\tlisten-on { any; };\n}/" /etc/bind/named.conf.options
+	#sed -i "s/^}/\n\tlisten-on { 127.0.0.1; };\n}/" /etc/bind/named.conf.options
 fi
 if [ -f /etc/resolvconf/resolv.conf.d/original ]; then
 	echo "Archiving old resolv.conf (was /etc/resolvconf/resolv.conf.d/original, now /etc/resolvconf/resolv.conf.original)." #NODOC
